@@ -12,7 +12,7 @@ function db_connect($db)
 // this function will only be called if pass all error checks so here assume fields are not empty, etc
 function insert_device($dblink_devices, $row_data){
 	// attempt to get device type number from the device types table
-	$sql = "SELECT device_type_num FROM device_types WHERE device_type_name=`$row_data[0]`";
+	$sql = "SELECT `device_type_num` FROM `device_types` WHERE `device_type_name`='$row_data[0]'";
 	$result=$dblink_devices->query($sql);
 	$device_type_num = 0;
 	if ($result->num_rows > 0) {
@@ -26,7 +26,7 @@ function insert_device($dblink_devices, $row_data){
 	
 	
 	// attempt to get manufacturer number from the manufacturer table
-	$sql = "SELECT manufacturer_num FROM manufacturers WHERE manufacturer_name=`$row_data[1]`";
+	$sql = "SELECT `manufacturer_num` FROM `manufacturers` WHERE `manufacturer_name`='$row_data[1]'";
 	$result=$dblink_devices->query($sql);
 	$manufacturer_num = 0;
 	if ($result->num_rows > 0) {

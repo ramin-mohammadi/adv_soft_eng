@@ -1,5 +1,5 @@
 <?php
-include("functions.php");
+include("functions_FINAL.php");
 
 // connect to dbs
 $dblink_devices=db_connect("devices");
@@ -9,10 +9,10 @@ $dblink_errors=db_connect("errors");
 echo "Hello from php process $argv[1] about to process file:$argv[2]\n";
 
 // open .csv partition for reading
-$fp=fopen("/parts/$argv[2]","r");
+$fp=fopen("/var/www/html/parts/$argv[2]","r");
 
-// used for keeping track of line #
-$count=($argv[1] - 2) * 1000 + 1; 
+// used for keeping track of line #, (5 mil records total, 5 partitions, so 1 mil each)
+$count=($argv[1] - 2) * 1000000 + 1; 
 
 $time_start=microtime(true);
 echo "PHP ID:$argv[1]-Start time is: $time_start\n";
@@ -22,11 +22,12 @@ while (($row_data=fgetcsv($fp)) !== FALSE)
 	$num_fields = count($row_data);
 	
 	//check for duplicate using serial number
-	$sql = "SELECT device_num FROM devices WHERE serial_num=`$row_data[2]`";
+	$sql = "SELECT `device_num` FROM `devices` WHERE `serial_num`='$row_data[2]'";
 	$result=$dblink_devices->query($sql);
 	//success (found a duplicate)
 	if ($result->num_rows > 0) {	
 		log_error($dblink_errors, $count, 2); // duplicate error has id of 2 (predefined in error_types table in errors db)
+		$count++;
 		continue;
 	}
 	
@@ -38,6 +39,7 @@ while (($row_data=fgetcsv($fp)) !== FALSE)
 		 || ($num_fields == 1 && $row_data[0] == "")
 		 || ($num_fields == 1 && preg_match('/^\s*$/', $row_data[0])) ){
 		log_error($dblink_errors, $count, 1);
+		$count++;
 		continue;
 	}
 	   
@@ -45,7 +47,7 @@ while (($row_data=fgetcsv($fp)) !== FALSE)
 	//device_type,manufacturer,serial_num
 	if($num_fields == 3){ // even if a field is empty, it will count it (ex: "aaa,,SN-33333" -> num_fields is 3)
 		//device_type and manufacturer missing
-		$field_missing = "";
+		$field_missing = 0;
 		if($row_data[0] == "" && $row_data[1] == "")
 			$field_missing = 8;
 		//device_type and serial_num missing
@@ -63,8 +65,11 @@ while (($row_data=fgetcsv($fp)) !== FALSE)
 		//only serial_num missing
 		else if($row_data[2] == "")
 			$field_missing = 7;
-		log_error($dblink_errors, $count, $field_missing);
-		continue;
+		if($field_missing !== 0){
+			log_error($dblink_errors, $count, $field_missing);
+			$count++;
+			continue;
+		}
 	}
 	
 	//line starting with an extra comma
@@ -72,6 +77,7 @@ while (($row_data=fgetcsv($fp)) !== FALSE)
 		log_error($dblink_errors, $count, 3);
 		// no clean up logic required, simply use indexes 1->3 by offseting the start of the array by 1 index
 		insert_device($dblink_devices, array_slice($row_data, 1)); 
+		$count++;
 		continue;
 	}
 	
@@ -81,7 +87,7 @@ while (($row_data=fgetcsv($fp)) !== FALSE)
 	$pattern = "/[^a-zA-Z0-9,\-\n\s]/";		
 	$replacement = '';
 	if($dirty_data=preg_grep($pattern, $row_data ) ){ // matches elements in array that meet regex pattern
-		$indexes = array_keys($row, ...$dirty_data); // get indexes of elements with foreign characters
+		$indexes = array_keys($row_data, ...$dirty_data); // get indexes of elements with foreign characters
 		foreach ( $indexes as $index )
     	{
 			//(clean up) get rid of matched foreign characters (replace regex matches with empty string)
@@ -90,6 +96,7 @@ while (($row_data=fgetcsv($fp)) !== FALSE)
 		log_error($dblink_errors, $count, 4);
 		//insert cleaned up data
 		insert_device($dblink_devices, $row_data); 
+		$count++;
 		continue;
 	}	
 		
