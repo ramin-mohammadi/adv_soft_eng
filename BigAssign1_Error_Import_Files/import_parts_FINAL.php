@@ -1,5 +1,5 @@
 <?php
-$directory = '/home/ubuntu/parts';
+$directory = '/var/www/html/parts';
 $scanned_directory = array_diff(scandir($directory), array('..', '.'));
 foreach($scanned_directory as $key=>$value)
 {

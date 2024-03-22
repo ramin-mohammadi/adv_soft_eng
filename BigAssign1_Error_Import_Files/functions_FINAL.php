@@ -10,7 +10,7 @@ function db_connect($db)
 
 
 // this function will only be called if pass all error checks so here assume fields are not empty, etc
-function insert_device($dblink_devices, $row_data){
+function insert_device($dblink_devices, $row_data, $dblink_errors, $count){
 	// attempt to get device type number from the device types table
 	$sql = "SELECT `device_type_num` FROM `device_types` WHERE `device_type_name`='$row_data[0]'";
 	$result=$dblink_devices->query($sql);
@@ -42,8 +42,16 @@ function insert_device($dblink_devices, $row_data){
 	// INSERT device into devices table
 	$sql="Insert into `devices` (`device_type_num`,`manufacturer_num`,`serial_num`) values
 	('$device_type_num','$manufacturer_num','$row_data[2]')";
-	$dblink_devices->query($sql) or
-		die("Something went wrong with DEVICES INSERT query $sql\n".$dblink_devices->error);
+	
+	try{ 
+		$dblink_devices->query($sql); 
+	}
+	catch (Exception $e) { //must catch to avoid duplciate error stopping execution
+		if($dblink_devices->errno == 1062) //error code for duplicate entry
+			log_error($dblink_errors, $count, 2); // duplicate error has id of 2 (predefined in error_types table in errors db)	
+		else
+			die("Something went wrong with DEVICES INSERT query $sql\n".$dblink_devices->error);
+	}	
 }
 
 function log_error($dblink_errors, $line_num, $error_type_num){

@@ -22,14 +22,14 @@ while (($row_data=fgetcsv($fp)) !== FALSE)
 	$num_fields = count($row_data);
 	
 	//check for duplicate using serial number
-	$sql = "SELECT `device_num` FROM `devices` WHERE `serial_num`='$row_data[2]'";
-	$result=$dblink_devices->query($sql);
-	//success (found a duplicate)
-	if ($result->num_rows > 0) {	
-		log_error($dblink_errors, $count, 2); // duplicate error has id of 2 (predefined in error_types table in errors db)
-		$count++;
-		continue;
-	}
+//	$sql = "SELECT `device_num` FROM `devices` WHERE `serial_num`='$row_data[2]'";
+//	$result=$dblink_devices->query($sql);
+//	//success (found a duplicate)
+//	if ($result->num_rows > 0) {	
+//		log_error($dblink_errors, $count, 2); // duplicate error has id of 2 (predefined in error_types table in errors db)
+//		$count++;
+//		continue;
+//	}
 	
 	//check for blank ("" or ",,," or ",," or "," or "     " )
 	if( $row_data == array(null) 
@@ -76,7 +76,7 @@ while (($row_data=fgetcsv($fp)) !== FALSE)
 	if($num_fields == 4 && $row_data[0] == "" && $row_data[1] !== "" && $row_data[2] !== "" && $row_data[3] !== ""){ 
 		log_error($dblink_errors, $count, 3);
 		// no clean up logic required, simply use indexes 1->3 by offseting the start of the array by 1 index
-		insert_device($dblink_devices, array_slice($row_data, 1)); 
+		insert_device($dblink_devices, array_slice($row_data, 1), $dblink_errors, $count); 
 		$count++;
 		continue;
 	}
@@ -95,13 +95,13 @@ while (($row_data=fgetcsv($fp)) !== FALSE)
     	}
 		log_error($dblink_errors, $count, 4);
 		//insert cleaned up data
-		insert_device($dblink_devices, $row_data); 
+		insert_device($dblink_devices, $row_data, $dblink_errors, $count); 
 		$count++;
 		continue;
 	}	
 		
 	//no possible errors found (among the discovered errors), insert data
-	insert_device($dblink_devices, $row_data); 
+	insert_device($dblink_devices, $row_data, $dblink_errors, $count); 
 	$count++;
 }
 
