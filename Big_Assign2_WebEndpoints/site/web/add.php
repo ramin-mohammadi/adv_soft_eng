@@ -108,48 +108,52 @@
 							echo '<div class="alert alert-danger" role="alert">Invalid input for Manufacturer</div>';
 						}
 				   
+				   
 				   		else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="Empty_SerialNum")
                         {
-                            echo '<div class="alert alert-danger" role="alert"><Serial Number input is empty</div>';
+                            echo '<div class="alert alert-danger" role="alert">Serial Number input is empty</div>';
                         }
 				   		else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="Empty_Device")
                         {
-                            echo '<div class="alert alert-danger" role="alert"><Device input is empty</div>';
+                            echo '<div class="alert alert-danger" role="alert">Device input is empty</div>';
                         }
 				   		else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="Empty_Manufacturer")
                         {
-                            echo '<div class="alert alert-danger" role="alert"><Manufacturer input is empty</div>';
+                            echo '<div class="alert alert-danger" role="alert">Manufacturer input is empty</div>';
                         }
                    ?>
 				   
 					<!--add new equipment form-->
+				   	<h4>Add New Equipment:</h4>
                     <form method="post" action="">
-                    <div class="form-group">
-                        <label for="exampleDevice">Device:</label>
-                        <select class="form-control" name="device">
-                            <?php
-                                foreach($devices as $key=>$value)
-                                    echo '<option value="'.$key.'">'.$value.'</option>';
-                            ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleManufacturer">Manufacturer:</label>
-                        <select class="form-control" name="manufacturer">
-                            <?php
-                                foreach($manufacturers as $key=>$value)
-                                    echo '<option value="'.$key.'">'.$value.'</option>';
-                            ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleSerial">Serial Number:</label>
-                        <input type="text" class="form-control" id="serialInput" name="serialnumber">
-                    </div>
-                        <button type="submit" class="btn btn-primary" name="submit_AddEquipment" value="submit_AddEquipment">Add Equipment</button>
+						<div class="form-group">
+							<label for="exampleDevice">Device:</label>
+							<select class="form-control" name="device">
+								<?php
+									foreach($devices as $key=>$value)
+										echo '<option value="'.$key.'">'.$value.'</option>';
+								?>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="exampleManufacturer">Manufacturer:</label>
+							<select class="form-control" name="manufacturer">
+								<?php
+									foreach($manufacturers as $key=>$value)
+										echo '<option value="'.$key.'">'.$value.'</option>';
+								?>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="exampleSerial">Serial Number:</label>
+							<input type="text" class="form-control" id="serialInput" name="serialnumber">
+						</div>
+						<button type="submit" class="btn btn-primary" name="submit_AddEquipment" value="submit_AddEquipment">Add Equipment</button>
                    </form>
-				   
-				   
+				   <br>
+			  </div>   
+			  <div class="row">
+				<h4>Add New Device:</h4>
 					<!--add new device form-->
 				 	<form method="post" action="">
                     <div class="form-group">
@@ -158,7 +162,12 @@
                     </div>
                         <button type="submit" class="btn btn-primary" name="submit_AddDevice" value="submit_AddDevice">Add Device</button>
                    </form>
-				   
+				  <br>
+			   </div>
+			  
+			  <div class="row">
+			   	<h4>Add New Manufacturer:</h4>
+			   
 				   
 					<!--add new manufacturer form-->
 				 	<form method="post" action="">
@@ -238,7 +247,7 @@
 
     else if (isset($_POST['submit_AddDevice']))
 	{
-		$device_input=$_POST['submit_AddDevice'];
+		$device_input=$_POST['deviceInput'];
 		
 		//check if Device input is empty or just whitespaces
 		if (strlen(trim($device_input)) == 0){
@@ -259,7 +268,7 @@
 		
 		//check if device name is valid input
 		$pattern = "/[^a-zA-Z0-9,\-\n\s]/";		
-		if($dirty_data=preg_grep($pattern, $device_input ) ){ // matches elements in array that meet regex pattern
+		if($dirty_data=preg_match($pattern, $device_input ) ){ // matches elements in array that meet regex pattern
             echo "ERROR: Device name has invalid input";
 			redirect("add.php?msg=InvalidInput_Device");
 		}
@@ -269,6 +278,7 @@
 		$result=$dblink->query($sql);
 		if ($result->num_rows <= 0) {	// device_type doesnt exist, add new device_type
 			new_device_type($dblink, $device_input);
+			redirect("index.php?msg=DeviceAdded");
 		}	
 		else
             redirect("add.php?msg=DeviceExists"); // duplicate device
@@ -277,7 +287,7 @@
 
 	else if (isset($_POST['submit_AddManufacturer']))
 	{
-		$manufacturer_input=$_POST['submit_AddManufacturer'];
+		$manufacturer_input=$_POST['manufacturerInput'];
 		
 		//check if manufacturer input is empty or just whitespaces
 		if (strlen(trim($manufacturer_input)) == 0){
@@ -298,7 +308,7 @@
 		
 		//check if device name is valid input
 		$pattern = "/[^a-zA-Z0-9,\-\n\s]/";		
-		if($dirty_data=preg_grep($pattern, $manufacturer_input ) ){ // matches elements in array that meet regex pattern
+		if($dirty_data=preg_match($pattern, $manufacturer_input ) ){ // matches elements in array that meet regex pattern
             echo "ERROR: Manufacturer name has invalid input";
 			redirect("add.php?msg=InvalidInput_Manufacturer");
 		}
@@ -308,6 +318,7 @@
 		$result=$dblink->query($sql);
 		if ($result->num_rows <= 0) {	// manufacturer doesnt exist, add new device_type
 			$manufacturer_num = new_manufacturer($dblink, $manufacturer_input);
+			redirect("index.php?msg=ManufacturerAdded");
 		}	
 		else
             redirect("add.php?msg=DeviceExists"); // duplicate manufacturer

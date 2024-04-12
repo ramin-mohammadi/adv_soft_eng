@@ -141,7 +141,7 @@
 		
 		//check if search is valid input
 		$pattern = "/[^a-zA-Z0-9,\-\n\s]/";		
-		if($dirty_data=preg_grep($pattern, $search_input ) ){ // matches elements in array that meet regex pattern
+		if($dirty_data=preg_match($pattern, $search_input ) ){ // matches elements in array that meet regex pattern
             echo "ERROR: Search has invalid input";
 			redirect("add.php?msg=InvalidInput_Search");
 		}

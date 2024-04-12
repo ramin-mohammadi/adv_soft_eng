@@ -49,9 +49,21 @@
                     if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="EquipmentAdded")
                     {
                         echo '<div class="alert alert-success" role="alert">Equipment successfully added.</div>';
-                
+                    }
+				   	else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="DeviceAdded")
+                    {
+                        echo '<div class="alert alert-success" role="alert">Device successfully added.</div>';
+                    }
+				   	else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="ManufacturerAdded")
+                    {
+                        echo '<div class="alert alert-success" role="alert">Manufacturer successfully added.</div>';
                     }
                     ?>
+				   
+				  
+				  <h3>This is the Home Page!</h3>
+                   
+
                         
 <!--
                     <div class="col-md-4 col-sm-4">
