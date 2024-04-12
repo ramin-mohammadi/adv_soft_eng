@@ -55,17 +55,24 @@
                         $dblink=db_connect("devices"); 
 				   
 				   		// Checking error messages				   
-				   		if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="InvalidInput_Search")
-						{
-							echo '<div class="alert alert-danger" role="alert">Invalid input for Search</div>';
-						}
+//				   		if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="InvalidInput_Search")
+//						{
+//							echo '<div class="alert alert-danger" role="alert">Invalid input for Search</div>';
+//						}
 				   		
 				   
 				  		if(isset($_SESSION['ids']) && isset($_REQUEST['searchBy'])){
 							$searchBy = $_REQUEST['searchBy'];
 							$ids = $_SESSION['ids'];
 							echo "<p>Search By: '$searchBy'</p>";
-							echo $ids;
+//							for($i=0; $i<10; $i++){
+//								echo $ids[$i];
+//								echo "<br>";  
+//							}
+							foreach($ids as $id){
+								echo $id;
+								echo "<br>";  
+							}
 				   
 //						<h2>Bootstrap List with Links</h2>
 //						<ul class="list-group">
@@ -76,6 +83,7 @@
 //							<li class="list-group-item"><a href="#">Item 5</a></li>
 //						</ul>
 						}
+//				   		unset($_SESSION['ids']);
 					?>
 
                </div>

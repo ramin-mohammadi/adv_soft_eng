@@ -1,5 +1,7 @@
 <?php
 	session_start();
+	unset($_SESSION['ids']);
+
 ?>
 <!doctype html>
 <html>
@@ -61,24 +63,24 @@
 						}
 				   		else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="Empty_Search")
                         {
-                            echo '<div class="alert alert-danger" role="alert"><Search input is empty</div>';
+                            echo '<div class="alert alert-danger" role="alert">Search input is empty</div>';
                         }
 				   		else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="TooLong")
                         {
-                            echo '<div class="alert alert-danger" role="alert"><Search input is too many characters</div>';
+                            echo '<div class="alert alert-danger" role="alert">Search input is too many characters</div>';
                         }
 				   		
 				   		else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="NoMatch_Search_SerialNum")
                         {
-                            echo '<div class="alert alert-danger" role="alert"><No match for searched Serial Number</div>';
+                            echo '<div class="alert alert-danger" role="alert">No match for searched Serial Number</div>';
                         }
 				   		else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="NoMatch_Search_Device")
                         {
-                            echo '<div class="alert alert-danger" role="alert"><No match for searched Device</div>';
+                            echo '<div class="alert alert-danger" role="alert">No match for searched Device</div>';
                         }
 				   		else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="NoMatch_Search_Manufacturer")
                         {
-                            echo '<div class="alert alert-danger" role="alert"><No match for searched Manufacturer</div>';
+                            echo '<div class="alert alert-danger" role="alert">No match for searched Manufacturer</div>';
                         }
 				   
 				   ?>
@@ -143,13 +145,16 @@
 		$pattern = "/[^a-zA-Z0-9,\-\n\s]/";		
 		if($dirty_data=preg_match($pattern, $search_input ) ){ // matches elements in array that meet regex pattern
             echo "ERROR: Search has invalid input";
-			redirect("add.php?msg=InvalidInput_Search");
+			redirect("search.php?msg=InvalidInput_Search");
 		}
+		
+		// TRUNACATE ARRAY bc our Php session and CPU cant handle all of the queries
+		$first_num=5000;
 		
 		// search for equipments with the specified search by. Auto ids for the records will be passed to view page
 		switch($_POST['searchBy']){
 			case 'serial_number':
-				$sql="Select `device_num` from `devices` where `serial_num`='$search_input'"; 
+				$sql="Select `device_num` from `devices` where `serial_num`='$search_input' LIMIT $first_num"; 
 				$rst=$dblink->query($sql);
 				if ($rst->num_rows<=0)//serial number doesnt exist
 				{
@@ -165,10 +170,11 @@
 					echo "ERROR: Device doesnt exist";
 					redirect("search.php?msg=NoMatch_Search_Device");
 				}
+				$device_type_num=0;
 				while($row = $rst->fetch_assoc()) { //this loop should essentially only loop once (one row with value we want)
 					$device_type_num = $row["device_type_num"];
 				}
-				$sql="Select `device_num` from `devices` where `device_type_num`='$device_type_num'"; 
+				$sql="Select `device_num` from `devices` where `device_type_num`='$device_type_num' LIMIT $first_num"; 
 				$rst=$dblink->query($sql) or
 					die("<p>Something went wrong with $sql<br>".$dblink->error);
 				break;
@@ -180,10 +186,11 @@
 					echo "ERROR: Manufacturer doesnt exist";
 					redirect("search.php?msg=NoMatch_Search_Manufacturer");
 				}
+				$manufacturer_num=0;
 				while($row = $rst->fetch_assoc()) { //this loop should essentially only loop once (one row with value we want)
 					$manufacturer_num = $row["manufacturer_num"];
 				}
-				$sql="Select `device_num` from `devices` where `manufacturer_num`='$manufacturer_num'"; 
+				$sql="Select `device_num` from `devices` where `manufacturer_num`='$manufacturer_num' LIMIT $first_num"; 
 				$rst=$dblink->query($sql) or
 					die("<p>Something went wrong with $sql<br>".$dblink->error);
 				break;
@@ -197,9 +204,14 @@
         {
 			// get ids for equipment records
 			$ids = [];
-			while($row = $result->fetch_assoc()) {
+			while($row = $rst->fetch_assoc()) {
     			array_push($ids, $row["device_num"]);
 			}
+//			echo "<p>'$ids'</p>";
+			
+//			// TRUNACATE ARRAY bc our Php session and CPU cant handle all of the queries
+//			$first_num=2000;
+//			$ids = array_slice($ids, 0, $first_num);
 			
 			// pass ids to $_SESSION for view.php
 			$_SESSION['ids'] = $ids;
