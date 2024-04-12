@@ -27,7 +27,7 @@
                     </button>
 
                     <!-- lOGO TEXT HERE -->
-                    <a href="#" class="navbar-brand">Search Equipment Database</a>
+                    <a href="#" class="navbar-brand">View Equipment Database</a>
                </div>
                <!-- MENU LINKS -->
                <div class="collapse navbar-collapse">
@@ -67,7 +67,7 @@
 							<th scope="col">#</th>
 						</tr>
 					  </thead>
-  <tbody>
+					<tbody>
 
 
 				    <?php 

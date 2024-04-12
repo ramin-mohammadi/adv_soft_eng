@@ -209,7 +209,7 @@
 		
 		//check if serial number is valid input
 		$pattern = "/[^a-zA-Z0-9,\-\n\s]/";		
-		echo "<p>$serialNumber</p>";
+//		echo "<p>$serialNumber</p>";
 		if($dirty_data=preg_match($pattern, $serialNumber ) ){ // matches elements in array that meet regex pattern
             echo "ERROR: Serial number has invalid input";
 			redirect("add.php?msg=InvalidInput_SerialNum");
