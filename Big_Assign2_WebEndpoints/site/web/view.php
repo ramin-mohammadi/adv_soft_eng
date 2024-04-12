@@ -48,44 +48,113 @@
      <section id="feature">
           <div class="container">
                <div class="row">
+				   <table class="table table-striped">
+					  <thead>
+						<tr>
+						  <th scope="col">Device Num</th>
+						  <th scope="col">Device Name</th>
+						  <th scope="col">Manufacturer Name</th>
+						  <th scope="col">Serial Number</th>
+							<th scope="col">#</th>
+						</tr>
+					  </thead>
+  <tbody>
+
+
 				    <?php 
                         include("../functions_FINAL.php");
 				   	    
 				   		// connect to db called devices
                         $dblink=db_connect("devices"); 
-				   
-				   		// Checking error messages				   
-//				   		if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="InvalidInput_Search")
-//						{
-//							echo '<div class="alert alert-danger" role="alert">Invalid input for Search</div>';
-//						}
-				   		
-				   
+	  
 				  		if(isset($_SESSION['ids']) && isset($_REQUEST['searchBy'])){
 							$searchBy = $_REQUEST['searchBy'];
 							$ids = $_SESSION['ids'];
-							echo "<p>Search By: '$searchBy'</p>";
+							echo "<h4>Search By: ".str_replace('"', '', $searchBy)."</h4>";
 //							for($i=0; $i<10; $i++){
 //								echo $ids[$i];
 //								echo "<br>";  
 //							}
-							foreach($ids as $id){
-								echo $id;
-								echo "<br>";  
-							}
-				   
-//						<h2>Bootstrap List with Links</h2>
-//						<ul class="list-group">
-//							<li class="list-group-item"><a href="#">Item 1</a></li>
-//							<li class="list-group-item"><a href="#">Item 2</a></li>
-//							<li class="list-group-item"><a href="#">Item 3</a></li>
-//							<li class="list-group-item"><a href="#">Item 4</a></li>
-//							<li class="list-group-item"><a href="#">Item 5</a></li>
-//						</ul>
-						}
-//				   		unset($_SESSION['ids']);
-					?>
+							
+							// TRUNACATE ARRAY bc our Php session and CPU cant handle all of the queries
+							$first_num=2500;
 
+							$list= implode(', ', $ids); 
+							$sql = "SELECT `device_num`, `device_type_num`, `manufacturer_num`, `serial_num` FROM `devices` WHERE `device_num` IN($list) LIMIT $first_num";
+							$rst=$dblink->query($sql) or
+								die("<p>Something went wrong with $sql<br>".$dblink->error);
+							
+//							echo "<ul class='list-group'>";
+							
+						
+
+//							foreach($ids as $id){
+//								echo $id;
+//								echo "<br>";  
+								
+								while($row = $rst->fetch_assoc()) {
+									$device_num = $row['device_num'];
+									$device_type_num = $row['device_type_num'];
+									$manufacturer_num = $row['manufacturer_num'];
+									$serial_num = $row['serial_num'];
+									
+									
+									// Replace Foreign keys with dedicated values (device name and manufacturer name)
+									$sql = "SELECT `device_type_name` FROM `device_types` WHERE `device_type_num`='$device_type_num'";
+									$result=$dblink->query($sql) or
+										die("<p>Something went wrong with $sql<br>".$dblink->error);
+									if ($result->num_rows > 0) {
+										while($row = $result->fetch_assoc()) { 
+											$device_type_num = $row["device_type_name"];
+										}
+									}	
+									
+									$sql = "SELECT `manufacturer_name` FROM `manufacturers` WHERE `manufacturer_num`='$manufacturer_num'";
+									$result=$dblink->query($sql) or
+										die("<p>Something went wrong with $sql<br>".$dblink->error);
+									if ($result->num_rows > 0) {
+										while($row = $result->fetch_assoc()) { 
+											$manufacturer_num = $row["manufacturer_name"];
+										}
+									}	
+
+									echo "<tr>";
+										  echo "<th scope='row'>".$device_num."</th>";
+										  echo "<td>".$device_type_num."</td>";
+									  	  echo "<td>".$manufacturer_num."</td>";
+										  echo "<td>".$serial_num."</td>";
+										  echo "<td><button type='button' class='btn btn-primary'>Update</button></td>";
+									echo "</tr>";
+								}
+
+//								switch($searchBy){
+//									case 'serial_number':
+//										while($row = $rst->fetch_assoc()) {
+//											$device_type_num = $row['device_type_num'];
+//											$b = $row['manufacturer_num'];
+//											$c = $row['serial_num'];
+//
+//
+//											echo "<li class='list-group-item'><a href=''>" + $device_type_num + $b + $c+"</a></li>";
+//										}
+//
+//										break;
+//									case 'device':
+//										break;
+//									case 'manufacturer':
+//										$max_len=32;
+//										break;
+//								}
+//							}
+//							echo "</ul>";
+							
+				   
+//						}
+						}
+					?>
+	  
+				  </tbody>
+				</table>
                </div>
           </div>
      </section>

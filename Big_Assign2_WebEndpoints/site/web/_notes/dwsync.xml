@@ -7,6 +7,6 @@
 <file name="add.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133574017852932005" remote="133574017880000000" Dst="2" />
 <file name="api_call.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133573146722549064" remote="133573149570000000" Dst="2" />
 <file name="index.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133574019622020419" remote="133574019630000000" Dst="2" />
-<file name="search.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133574065589099813" remote="133574065610000000" Dst="2" />
-<file name="view.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133574056522299270" remote="133574056530000000" Dst="2" />
+<file name="search.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133574125661638210" remote="133574125660000000" Dst="2" />
+<file name="view.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133574125089679751" remote="133574125270000000" Dst="2" />
 </dwsync>

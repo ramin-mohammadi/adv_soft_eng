@@ -149,7 +149,7 @@
 		}
 		
 		// TRUNACATE ARRAY bc our Php session and CPU cant handle all of the queries
-		$first_num=5000;
+		$first_num=3000;
 		
 		// search for equipments with the specified search by. Auto ids for the records will be passed to view page
 		switch($_POST['searchBy']){
