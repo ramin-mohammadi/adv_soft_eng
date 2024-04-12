@@ -44,15 +44,6 @@
           </div>
      </section>
 	
-<!--
-	<script type="text/javascript">
-		function update_button(device_num){
-			document.location.href="update.php?device_num="+device_num;
-		}
-	</script>
--->
-
-	
 <!--     FEATURE -->
      <section id="feature">
           <div class="container">
@@ -76,12 +67,6 @@
 				   		// connect to db called devices
                         $dblink=db_connect("devices"); 
 	  
-						if(isset($_POST['update_button'])){
-							redirect();
-						}
-
-	  
-	  
 				  		if(isset($_SESSION['ids']) && isset($_REQUEST['searchBy'])){
 							$searchBy = $_REQUEST['searchBy'];
 							$ids = $_SESSION['ids'];
@@ -92,7 +77,7 @@
 //							}
 							
 							// TRUNACATE ARRAY bc our Php session and CPU cant handle all of the queries
-							$first_num=3000;
+							$first_num=2500;
 
 							$list= implode(', ', $ids); 
 							$sql = "SELECT `device_num`, `device_type_num`, `manufacturer_num`, `serial_num` FROM `devices` WHERE `device_num` IN($list) LIMIT $first_num";
@@ -132,15 +117,13 @@
 											$manufacturer_num = $row["manufacturer_name"];
 										}
 									}	
-									$uri = "https://ec2-3-142-218-191.us-east-2.compute.amazonaws.com:63221/web/update.php";
+
 									echo "<tr>";
 										  echo "<th scope='row'>".$device_num."</th>";
 										  echo "<td>".$device_type_num."</td>";
 									  	  echo "<td>".$manufacturer_num."</td>";
 										  echo "<td>".$serial_num."</td>";
-//										  echo "<td><button type='button' onclick='update_button($device_num)' class='btn btn-primary' name='update_button'>Update</button></td>";
-									  	  echo "<td><form method='post' action='$uri'><button type='submit' class='btn btn-primary' name='update_button' value='$device_num'>Update</button></form></td>";
-
+										  echo "<td><button type='button' class='btn btn-primary'>Update</button></td>";
 									echo "</tr>";
 								}
 
