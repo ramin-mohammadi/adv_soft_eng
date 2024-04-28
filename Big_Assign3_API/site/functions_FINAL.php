@@ -84,4 +84,31 @@ function redirect($uri)
 <?php die;
 }
 
+function api_call($endpoint, $data){
+	$ch=curl_init("https://ec2-3-142-218-191.us-east-2.compute.amazonaws.com:63221/api/".$endpoint);
+//	$data="test";
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//ignore ssl
+	curl_setopt($ch, CURLOPT_POST,1);//tell curl we are using post
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $data);//this is the data
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);//prepare a response
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		'content-type: application/x-www-form-urlencoded',
+		'content-length: '.strlen($data))
+				);
+	$result=curl_exec($ch); // $result is the data RECEIVED from executing that api endpoint
+	curl_close($ch);
+	//$jsonResult=json_decode($result,true);
+	//echo "<pre>";
+//	echo $result;
+	//echo "</pre>";
+	return $result;
+}
+
+function get_payload($result){
+	$resultsArray=json_decode($result, true);
+	$tmp=$resultsArray[1]; // get MSG / payload
+	$payloadData=explode("MSG:",$tmp);
+	return json_decode($payloadData[1], true); // get right side of colon in "MSG: <payload>" 
+}
+
 ?>

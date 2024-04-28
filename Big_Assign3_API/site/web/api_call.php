@@ -1,5 +1,5 @@
 <?php
-$ch=curl_init("https://ec2-3-142-218-191.us-east-2.compute.amazonaws.com:63221//api/");
+$ch=curl_init("https://ec2-3-142-218-191.us-east-2.compute.amazonaws.com:63221/api/");
 $data="test";
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//ignore ssl
 curl_setopt($ch, CURLOPT_POST,1);//tell curl we are using post

@@ -2,6 +2,14 @@
 <dwsync>
 <file name="api.php" server="ec2-3-16-218-236.us-east-2.compute.amazonaws.com//var/www/html/" local="133567298859328759" remote="133567298860000000" Dst="2" />
 <file name="add_equipment.php" server="ec2-3-16-218-236.us-east-2.compute.amazonaws.com//var/www/html/" local="133567214431130143" remote="133567216610000000" Dst="2" />
-<file name="add_equipment.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133570858837632856" remote="133573122510000000" Dst="2" />
-<file name="api.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133570858839187344" remote="133573122510000000" Dst="2" />
+<file name="add_equipment.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587935445170537" remote="133587935460000000" Dst="2" />
+<file name="api.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587942170779971" remote="133587942180000000" Dst="2" />
+<file name="list_devices.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587494601761386" remote="133587495020000000" Dst="2" />
+<file name="list_manufacturers.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587544866665169" remote="133587544850000000" Dst="2" />
+<file name="check_serialNum_exists.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587884819923753" remote="133587884830000000" Dst="2" />
+<file name="get_lastEquipAutoID.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587919754981256" remote="133587919810000000" Dst="2" />
+<file name="check_device_exists.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587931916853240" remote="133587931960000000" Dst="2" />
+<file name="add_device.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587937081179830" remote="133587937070000000" Dst="2" />
+<file name="check_manufacturer_exists.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587945298810669" remote="133587945290000000" Dst="2" />
+<file name="add_manufacturer.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587941872672303" remote="133587941910000000" Dst="2" />
 </dwsync>

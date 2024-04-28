@@ -50,22 +50,14 @@
 				   	    
 				   		// connect to db called devices
                         $dblink=db_connect("devices"); 
+
+				   		$result=api_call("list_devices", "");
+//				   		echo "<p>$result</p>";
+				   		$devices=get_payload($result); 
+				  
 				   
-				   		// query the auto id and name for device types table
-                        $sql="Select `device_type_name`,`device_type_num` from `device_types` where `status`='active'";
-                        $result=$dblink->query($sql) or
-                            die("<p>Something went wrong with $sql<br>".$dblink->error); // LOG SELECT ERROR
-                        $devices=array();
-                        while ($data=$result->fetch_array(MYSQLI_ASSOC))
-                            $devices[$data['device_type_num']]=$data['device_type_name'];
-				   		
-				   		//query the auto id and name from manufacturers table
-                        $sql="Select `manufacturer_name`,`manufacturer_num` from `manufacturers` where `status`='active'";
-                        $result=$dblink->query($sql) or
-                            die("<p>Something went wrong with $sql<br>".$dblink->error); // LOG SELECT ERROR
-				   		$manufacturers=array();
-                        while ($data=$result->fetch_array(MYSQLI_ASSOC))
-                            $manufacturers[$data['manufacturer_num']]=$data['manufacturer_name'];
+				   		$result=api_call("list_manufacturers", "");
+				   		$manufacturers=get_payload($result); 
 				   		
 				   		// Checking error messages
                         if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="EquipmentExists") //duplicate serial num
@@ -78,7 +70,7 @@
                         }
 						else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="ManufacturerExists") //duplicate manufacturer
                         {
-                            echo '<div class="alert alert-danger" role="alert"><Manufacturer already exists in database!</div>';
+                            echo '<div class="alert alert-danger" role="alert">Manufacturer already exists in database!</div>';
                         }
 				   
 				   		else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="TooLong_SerialNum") 
@@ -189,7 +181,7 @@
         $manufacturer=$_POST['manufacturer'];
         $serialNumber=trim($_POST['serialnumber']);
 		
-		echo '<h1>'.$device.' '.$manufacturer.' '.$serialNumber.'</h1>';
+//		echo '<h1>'.$device.' '.$manufacturer.' '.$serialNumber.'</h1>';
 		
 		//check if serial number input is empty or just whitespaces
 		if (strlen($serialNumber) == 0){
@@ -216,28 +208,20 @@
 		}
 		
 		// Check if serial number already exists
-        $sql="Select `device_num` from `devices` where `serial_num`='$serialNumber'"; 
-        $rst=$dblink->query($sql) or
-             die("<p>Something went wrong with $sql<br>".$dblink->error);
-        if ($rst->num_rows<=0)//sn not previously found
+		$result=api_call("check_serialNum_exists", "serialNum=".$serialNumber);
+		$num_rows=get_payload($result);
+		
+        if ($num_rows<=0)//sn not previously found
         {
 			// my auto increment could not be added due to large table and low CPU resources
 			// Instead, acquire last id to insert manually
-			$sql="Select MAX(`device_num`) AS `max_id` from `devices`"; 
-			$rst=$dblink->query($sql) or
-             	die("<p>Something went wrong with $sql<br>".$dblink->error);
-			$next_device_num = 0;
-			while ($row = mysqli_fetch_array($rst)) {
-//				$n = $row['max_id'];
-//				echo "<p>'$n'</p>";
-    			$next_device_num = intval($row['max_id']) + 1;       
-			}
+			$result=api_call("get_lastEquipAutoID", "");
+			$next_device_num=get_payload($result);
 //			echo "<p>'$next_device_num'</p>";
 //			die();
 			
-            $sql="Insert into `devices` (`device_num`, `device_type_num`,`manufacturer_num`,`serial_num`) values ('$next_device_num', '$device','$manufacturer','$serialNumber')";
-            $dblink->query($sql) or
-                 die("<p>Something went wrong with $sql<br>".$dblink->error);
+			api_call("add_equipment", "next_device_num=".$next_device_num."&device=".$device."&manufacturer=".$manufacturer."&serialNum=".$serialNumber);
+            
             redirect("index.php?msg=EquipmentAdded");
         }
         else
@@ -274,10 +258,12 @@
 		}
 		
 		// attempt to get device type number from the device types table
-		$sql = "SELECT `device_type_num` FROM `device_types` WHERE `device_type_name`='$device_input'";
-		$result=$dblink->query($sql);
-		if ($result->num_rows <= 0) {	// device_type doesnt exist, add new device_type
-			new_device_type($dblink, $device_input);
+		$result=api_call("check_device_exists", "device_input=".$device_input);
+		$num_rows=get_payload($result);
+
+		if ($num_rows <= 0) {	// device_type doesnt exist, add new device_type
+//			new_device_type($dblink, $device_input);
+			api_call("add_device", "device_input=".$device_input);
 			redirect("index.php?msg=DeviceAdded");
 		}	
 		else
@@ -314,14 +300,15 @@
 		}
 		
 		// attempt to get manufacturer number from the manufacturer table
-		$sql = "SELECT `manufacturer_num` FROM `manufacturers` WHERE `manufacturer_name`='$manufacturer_input'";
-		$result=$dblink->query($sql);
-		if ($result->num_rows <= 0) {	// manufacturer doesnt exist, add new device_type
-			$manufacturer_num = new_manufacturer($dblink, $manufacturer_input);
+		$result=api_call("check_manufacturer_exists", "manufacturer_input=".$manufacturer_input);
+		$num_rows=get_payload($result);
+
+		if ($num_rows <= 0) {	// manufacturer doesnt exist, add new device_type
+			api_call("add_manufacturer", "manufacturer_input=".$manufacturer_input);
 			redirect("index.php?msg=ManufacturerAdded");
 		}	
 		else
-            redirect("add.php?msg=DeviceExists"); // duplicate manufacturer
+            redirect("add.php?msg=ManufacturerExists"); // duplicate manufacturer
 		
 	}
 
