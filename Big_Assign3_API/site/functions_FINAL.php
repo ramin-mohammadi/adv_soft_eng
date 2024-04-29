@@ -111,4 +111,11 @@ function get_payload($result){
 	return json_decode($payloadData[1], true); // get right side of colon in "MSG: <payload>" 
 }
 
+function get_action($result){
+	$resultsArray=json_decode($result, true);
+	$tmp=$resultsArray[2]; // get Action
+	$payloadData=explode("Action:",$tmp);
+	return json_decode($payloadData[1], true); // get right side of colon in "Action: <text>" 	
+}
+
 ?>

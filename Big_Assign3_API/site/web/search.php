@@ -122,6 +122,7 @@
 		$search_input = $_POST['searchInput'];
 		$search_by = $_POST['searchBy'];
 		$inactive_option = $_POST['inactive_option'];
+		
 		//check if search input is empty or just whitespaces
 		if (strlen(trim($search_input)) == 0){
 			echo "ERROR: Search input is empty";
@@ -163,85 +164,45 @@
 		// search for equipments with the specified search by. Auto ids for the records will be passed to view page
 		switch($_POST['searchBy']){
 			case 'serial_number':
-				if(!isset($inactive_option))
-					$sql="Select `device_num` from `devices` where `serial_num`='$search_input' AND `status`='active' LIMIT $first_num"; 
-				else
-					$sql="Select `device_num` from `devices` where `serial_num`='$search_input' LIMIT $first_num"; 
+				$result=api_call("search_serialNum", "search_input=".$search_input."&first_num=".$first_num."&inactive_option=".$inactive_option);
+				$ids=get_payload($result);
 
-				$rst=$dblink->query($sql);
-				if ($rst->num_rows<=0)//serial number doesnt exist
+				if (!isset($ids))//serial number doesnt exist
 				{
 					echo "ERROR: Serial Number doesnt exist";
 					redirect("search.php?msg=NoMatch_Search_SerialNum");
 				}
 				break;
 			case 'device':
-				$sql = "SELECT `device_type_num` FROM `device_types` WHERE `device_type_name`='$search_input'";
-				$rst=$dblink->query($sql);
-				if ($rst->num_rows<=0)//device doesnt exist
+				$result=api_call("search_device", "search_input=".$search_input."&first_num=".$first_num."&inactive_option=".$inactive_option);
+				$ids=get_payload($result);
+
+				if (!isset($ids))//device doesnt exist
 				{
 					echo "ERROR: Device doesnt exist";
 					redirect("search.php?msg=NoMatch_Search_Device");
 				}
-				$device_type_num=0;
-				while($row = $rst->fetch_assoc()) { //this loop should essentially only loop once (one row with value we want)
-					$device_type_num = $row["device_type_num"];
-				}
-				if(!isset($inactive_option))
-					$sql="Select `device_num` from `devices` where `device_type_num`='$device_type_num' AND `status`='active' LIMIT $first_num"; 
-				else
-					$sql="Select `device_num` from `devices` where `device_type_num`='$device_type_num' LIMIT $first_num"; 
-					
-				$rst=$dblink->query($sql) or
-					die("<p>Something went wrong with $sql<br>".$dblink->error);
 				break;
 			case 'manufacturer':
-				$sql = "SELECT `manufacturer_num` FROM `manufacturers` WHERE `manufacturer_name`='$search_input'";
-				$rst=$dblink->query($sql);
-				if ($rst->num_rows<=0)//manufacturer doesnt exist
+				$result=api_call("search_manufacturer", "search_input=".$search_input."&first_num=".$first_num."&inactive_option=".$inactive_option);
+				$ids=get_payload($result);
+
+				if (!isset($ids))//manufacturer doesnt exist
 				{
 					echo "ERROR: Manufacturer doesnt exist";
 					redirect("search.php?msg=NoMatch_Search_Manufacturer");
 				}
-				$manufacturer_num=0;
-				while($row = $rst->fetch_assoc()) { //this loop should essentially only loop once (one row with value we want)
-					$manufacturer_num = $row["manufacturer_num"];
-				}
-				if(!isset($inactive_option))
-					$sql="Select `device_num` from `devices` where `manufacturer_num`='$manufacturer_num' AND `status`='active' LIMIT $first_num"; 
-				else
-					$sql="Select `device_num` from `devices` where `manufacturer_num`='$manufacturer_num' LIMIT $first_num"; 
-
-				$rst=$dblink->query($sql) or
-					die("<p>Something went wrong with $sql<br>".$dblink->error);
 				break;
 			default:
 				die("ERROR: no matched searchBY value when performing search query");
 				break;
 		}
-		
-		//if made it here without redirect or die(), search success
-        if ($rst->num_rows>0)//search exists
-        {
-			// get ids for equipment records
-			$ids = [];
-			while($row = $rst->fetch_assoc()) {
-    			array_push($ids, $row["device_num"]);
-			}
-//			echo "<p>'$ids'</p>";
-			
-//			// TRUNACATE ARRAY bc our Php session and CPU cant handle all of the queries
-//			$first_num=2000;
-//			$ids = array_slice($ids, 0, $first_num);
-			
-			// pass ids to $_SESSION for view.php
-			$_SESSION['ids'] = $ids;
-			
-			// pass the searchBY value
-            redirect("view.php?searchBy='$search_by'");
-        }
-	
+		// if logic reaches this line, there were search matches
+		// pass ids to $_SESSION for view.php
+		$_SESSION['ids'] = $ids;
 
+		// pass the searchBY value
+		redirect("view.php?searchBy='$search_by'");	
 
 	}
 ?>

@@ -48,9 +48,6 @@
                    <?php 
                         include("../functions_FINAL.php");
 				   	    
-				   		// connect to db called devices
-                        $dblink=db_connect("devices"); 
-
 				   		$result=api_call("list_devices", "");
 //				   		echo "<p>$result</p>";
 				   		$devices=get_payload($result); 

@@ -58,9 +58,26 @@ switch($endPoint)
 	 	$manufacturer_input=$_REQUEST['manufacturer_input'];
 		include("check_manufacturer_exists.php");
 		break;
-
 	case "get_lastEquipAutoID":
 		include("get_lastEquipAutoID.php");
+		break;
+	case "search_device":
+		$search_input=$_REQUEST['search_input'];
+		$first_num=$_REQUEST['first_num'];
+		$inactive_option=$_REQUEST['inactive_option'];
+		include("search_device.php");
+		break;
+	case "search_manufacturer":
+		$search_input=$_REQUEST['search_input'];
+		$first_num=$_REQUEST['first_num'];
+		$inactive_option=$_REQUEST['inactive_option'];
+		include("search_manufacturer.php");
+		break;
+	case "search_serialNum":
+		$search_input=$_REQUEST['search_input'];
+		$first_num=$_REQUEST['first_num'];
+		$inactive_option=$_REQUEST['inactive_option'];
+		include("search_serialNum.php");
 		break;
     default:
         header('Content-Type: application/json');
