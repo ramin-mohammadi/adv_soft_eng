@@ -29,7 +29,9 @@ switch($endPoint)
 		include("add_manufacturer.php");
 		break;
 	case "list_equipments":
-		include("list_equipment.php");
+		$list=$_REQUEST['list_deviceNum'];
+		$first_num=$_REQUEST['first_num'];
+		include("list_equipments.php");
 		break;
 	case "list_manufacturers":
 		include("list_manufacturers.php");

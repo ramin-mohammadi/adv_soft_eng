@@ -7,7 +7,7 @@
 <file name="add.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587952411574343" remote="133587952410000000" Dst="2" />
 <file name="api_call.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587102425987837" remote="133587947600000000" Dst="2" />
 <file name="index.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133574019622020419" remote="133574019630000000" Dst="2" />
-<file name="search.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133588968105703118" remote="133588968130000000" Dst="2" />
-<file name="view.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133586259187964007" remote="133586259190000000" Dst="2" />
+<file name="search.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133588970604447430" remote="133588970620000000" Dst="2" />
+<file name="view.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133589704743698681" remote="133589704750000000" Dst="2" />
 <file name="update.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133586236626183356" remote="133586236790000000" Dst="2" />
 </dwsync>

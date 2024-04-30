@@ -64,16 +64,7 @@
 
 				    <?php 
                         include("../functions_FINAL.php");
-				   	    
-				   		// connect to db called devices
-                        $dblink=db_connect("devices"); 
-	  
-						if(isset($_POST['update_button'])){
-							redirect();
-						}
-
-	  
-	  
+				   	     
 				  		if(isset($_SESSION['ids']) && isset($_REQUEST['searchBy'])){
 							$searchBy = $_REQUEST['searchBy'];
 							$ids = $_SESSION['ids'];
@@ -87,53 +78,21 @@
 							$first_num=1000;
 
 							$list= implode(', ', $ids); 
-							$sql = "SELECT `device_num`, `device_type_num`, `manufacturer_num`, `serial_num`, `status` FROM `devices` WHERE `device_num` IN($list) LIMIT $first_num";
-							$rst=$dblink->query($sql) or
-								die("<p>Something went wrong with $sql<br>".$dblink->error);
-							
-//							echo "<ul class='list-group'>";
-							
-						
+							$result=api_call("list_equipments", "list_deviceNum=".$list."&first_num=".$first_num);
+							$equipments=json_decode(get_payload($result), true);
+							$uri = "https://ec2-3-142-218-191.us-east-2.compute.amazonaws.com:63221/web/update.php";
 
-//							foreach($ids as $id){
-//								echo $id;
-//								echo "<br>";  
-								
-								while($row = $rst->fetch_assoc()) {
-									$device_num = $row['device_num'];
-									$device_type_num = $row['device_type_num'];
-									$manufacturer_num = $row['manufacturer_num'];
-									$serial_num = $row['serial_num'];
-									$status = $row['status'];
-									
-									// Replace Foreign keys with dedicated values (device name and manufacturer name)
-									$sql = "SELECT `device_type_name` FROM `device_types` WHERE `device_type_num`='$device_type_num'";
-									$result=$dblink->query($sql) or
-										die("<p>Something went wrong with $sql<br>".$dblink->error);
-									if ($result->num_rows > 0) {
-										while($row = $result->fetch_assoc()) { 
-											$device_type_num = $row["device_type_name"];
-										}
-									}	
-									
-									$sql = "SELECT `manufacturer_name` FROM `manufacturers` WHERE `manufacturer_num`='$manufacturer_num'";
-									$result=$dblink->query($sql) or
-										die("<p>Something went wrong with $sql<br>".$dblink->error);
-									if ($result->num_rows > 0) {
-										while($row = $result->fetch_assoc()) { 
-											$manufacturer_num = $row["manufacturer_name"];
-										}
-									}	
-									$uri = "https://ec2-3-142-218-191.us-east-2.compute.amazonaws.com:63221/web/update.php";
-									echo "<tr>";
-										  echo "<th scope='row'>".$device_num."</th>";
-										  echo "<td>".$device_type_num."</td>";
-									  	  echo "<td>".$manufacturer_num."</td>";
-										  echo "<td>".$serial_num."</td>";
-										  echo "<td>".$status."</td>";
-									  	  echo "<td><form method='post' action='$uri'><button type='submit' class='btn btn-primary' name='update_button' value='$device_num'>Update</button></form></td>";
-									echo "</tr>";
-								}
+							for ($i = 0; $i < count($equipments['device_num']); $i++){
+								$device_num=$equipments['device_num'][$i];
+								echo "<tr>";
+									  echo "<th scope='row'>".$device_num."</th>";
+									  echo "<td>".$equipments['device_type_name'][$i]."</td>";
+									  echo "<td>".$equipments['manufacturer_name'][$i]."</td>";
+									  echo "<td>".$equipments['serial_num'][$i]."</td>";
+									  echo "<td>".$equipments['status'][$i]."</td>";
+									  echo "<td><form method='post' action='$uri'><button type='submit' class='btn btn-primary' name='update_button' value='$device_num'>Update</button></form></td>";
+								echo "</tr>";
+							}
 
 						}
 					?>

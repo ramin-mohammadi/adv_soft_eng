@@ -52,10 +52,7 @@
                <div class="row">
 				    <?php 
                         include("../functions_FINAL.php");
-				   	    
-				   		// connect to db called devices
-                        $dblink=db_connect("devices"); 
-				   
+				   	    				   
 				   		// Checking error messages				   
 				   		if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="InvalidInput_Search")
 						{
