@@ -40,12 +40,23 @@ switch($endPoint)
 		include("list_devices.php");
 		break;
 	case "modify_equipment":
+		$serial_num=$_REQUEST['serial_num'];
+		$device_type_num=$_REQUEST['device_type_num'];
+		$manufacturer_num=$_REQUEST['manufacturer_num'];
+		$status=$_REQUEST['status'];
+		$device_num=$_REQUEST['device_num'];
 		include("modify_equipment.php");
 		break;
 	case "modify_device":
+		$device_input=$_REQUEST['device_input'];
+		$status=$_REQUEST['status'];
+		$device_type_num=$_REQUEST['device_type_num'];
 		include("modify_device.php");
 		break;
 	case "modify_manufacturer":
+		$manufacturer_input=$_REQUEST['manufacturer_input'];
+		$status=$_REQUEST['status'];
+		$manufacturer_num=$_REQUEST['manufacturer_num'];
 		include("modify_manufacturer.php");
 		break;
 	case "check_serialNum_exists":
@@ -80,6 +91,10 @@ switch($endPoint)
 		$first_num=$_REQUEST['first_num'];
 		$inactive_option=$_REQUEST['inactive_option'];
 		include("search_serialNum.php");
+		break;
+	case "view_single_equipment":
+		$device_num=$_REQUEST['device_num'];
+		include("view_single_equipment.php");
 		break;
     default:
         header('Content-Type: application/json');

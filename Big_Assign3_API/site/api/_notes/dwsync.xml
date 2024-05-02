@@ -3,7 +3,7 @@
 <file name="api.php" server="ec2-3-16-218-236.us-east-2.compute.amazonaws.com//var/www/html/" local="133567298859328759" remote="133567298860000000" Dst="2" />
 <file name="add_equipment.php" server="ec2-3-16-218-236.us-east-2.compute.amazonaws.com//var/www/html/" local="133567214431130143" remote="133567216610000000" Dst="2" />
 <file name="add_equipment.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587935445170537" remote="133587935460000000" Dst="2" />
-<file name="api.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133589669216208323" remote="133589669250000000" Dst="2" />
+<file name="api.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133591446202688323" remote="133591446210000000" Dst="2" />
 <file name="list_devices.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587494601761386" remote="133587495020000000" Dst="2" />
 <file name="list_manufacturers.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587544866665169" remote="133587544850000000" Dst="2" />
 <file name="check_serialNum_exists.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133587884819923753" remote="133587884830000000" Dst="2" />
@@ -16,4 +16,8 @@
 <file name="search_device.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133588957292628754" remote="133588957300000000" Dst="2" />
 <file name="search_manufacturer.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133588963221563636" remote="133588963270000000" Dst="2" />
 <file name="list_equipments.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133589691525526628" remote="133589691760000000" Dst="2" />
+<file name="view_single_equipment.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133591464319983686" remote="133591464310000000" Dst="2" />
+<file name="modify_equipment.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133590011598152834" remote="133590011660000000" Dst="2" />
+<file name="modify_manufacturer.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133591449655933593" remote="133591449660000000" Dst="2" />
+<file name="modify_device.php" server="ec2-3-142-218-191.us-east-2.compute.amazonaws.com//var/www/html/" local="133590042893509696" remote="133591453490000000" Dst="2" />
 </dwsync>

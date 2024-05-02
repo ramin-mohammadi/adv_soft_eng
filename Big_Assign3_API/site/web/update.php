@@ -65,25 +65,15 @@
 					  <tbody>
 						<?php 
 							include("../functions_FINAL.php");
-
-							// connect to db called devices
-							$dblink=db_connect("devices"); 
 						  
 						  	// query the auto id and name for device types table
-							$sql="Select `device_type_name`,`device_type_num` from `device_types` where `status`='active'";
-							$result=$dblink->query($sql) or
-								die("<p>Something went wrong with $sql<br>".$dblink->error); // LOG SELECT ERROR
-							$devices=array();
-							while ($data=$result->fetch_array(MYSQLI_ASSOC))
-								$devices[$data['device_type_num']]=$data['device_type_name'];
+							$result=api_call("list_devices", "");
+						  	$devices=get_payload($result);
 
 							//query the auto id and name from manufacturers table
-							$sql="Select `manufacturer_name`,`manufacturer_num` from `manufacturers` where `status`='active'";
-							$result=$dblink->query($sql) or
-								die("<p>Something went wrong with $sql<br>".$dblink->error); // LOG SELECT ERROR
-							$manufacturers=array();
-							while ($data=$result->fetch_array(MYSQLI_ASSOC))
-								$manufacturers[$data['manufacturer_num']]=$data['manufacturer_name'];
+							$result=api_call("list_manufacturers", "");
+						  	$manufacturers=get_payload($result);
+
 						  
 							if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="EquipmentUpdated"){
 								echo '<div class="alert alert-success" role="alert">Equipment successfully updated.</div>';
@@ -112,6 +102,16 @@
 							{
 								echo '<div class="alert alert-danger" role="alert">Serial Number already exists, must be unique</div>';
 							}
+							else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="DeviceNameExists")			
+							{
+								echo '<div class="alert alert-danger" role="alert">Device name already exists</div>';
+							}
+							else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="ManufacturerNameExists")			
+							{
+								echo '<div class="alert alert-danger" role="alert">Manufacturer name already exists</div>';
+							}
+
+
 						  	else if (isset($_REQUEST['msg']) && $_REQUEST['msg']=="DeviceDoesntExist")			
 							{
 								echo '<div class="alert alert-danger" role="alert">Device doesnt exist</div>';
@@ -157,43 +157,16 @@
 							
 							if(isset($_SESSION['device_num']) ){
 								$device_num = $_SESSION['device_num'];
-								$sql = "SELECT `device_num`, `device_type_num`, `manufacturer_num`, `serial_num`, `status` FROM `devices` WHERE `device_num`=$device_num";
-								$rst=$dblink->query($sql) or
-									die("<p>Something went wrong with $sql<br>".$dblink->error);
-								while($row = $rst->fetch_assoc()) {
-									$device_num = $row['device_num'];
-									$device_type_num = $row['device_type_num'];
-									$manufacturer_num = $row['manufacturer_num'];
-									$serial_num = $row['serial_num'];
-									$status = $row['status'];
+								$result=api_call("view_single_equipment", "device_num=".$device_num);
+								$equipment=json_decode(get_payload($result), true);
 
-									// Replace Foreign keys with dedicated values (device name and manufacturer name)
-									$sql = "SELECT `device_type_name` FROM `device_types` WHERE `device_type_num`='$device_type_num'";
-									$result_dtype=$dblink->query($sql) or
-										die("<p>Something went wrong with $sql<br>".$dblink->error);
-									if ($result_dtype->num_rows > 0) {
-										while($row = $result_dtype->fetch_assoc()) { 
-											$device_type_name = $row["device_type_name"];
-										}
-									}	
-
-									$sql = "SELECT `manufacturer_name` FROM `manufacturers` WHERE `manufacturer_num`='$manufacturer_num'";
-									$result=$dblink->query($sql) or
-										die("<p>Something went wrong with $sql<br>".$dblink->error);
-									if ($result->num_rows > 0) {
-										while($row = $result->fetch_assoc()) { 
-											$manufacturer_name = $row["manufacturer_name"];
-										}
-									}	
-
-									echo "<tr>";
-									  echo "<th scope='row'>".$device_num."</th>";
-									  echo "<td>".$device_type_name."</td>";
-									  echo "<td>".$manufacturer_name."</td>";
-									  echo "<td>".$serial_num."</td>";
-									  echo "<td>".$status."</td>";
-									echo "</tr>";
-								}
+								echo "<tr>";
+								  echo "<th scope='row'>".$device_num."</th>";
+								  echo "<td>".$equipment['device_type_name']."</td>";
+								  echo "<td>".$equipment['manufacturer_name']."</td>";
+								  echo "<td>".$equipment['serial_num']."</td>";
+								  echo "<td>".$equipment['status']."</td>";
+								echo "</tr>";
 							}
 
 						?>
@@ -202,22 +175,6 @@
 				   
 				   <h4>Update Device For Equipment:</h4>
 				   <form method="post" action="">
-<!--
-                    <div class="form-group">
-                        <label for="exampleUpdateOption">Update Option</label>
-                        <select class="form-control" name="UpdateOption">
-							<option value="device">Device Name</option>;
-							<option value="manufacturer">Manufacturer Name</option>;
-							<option value="serial_number">Serial Number</option>;
-                        </select>
-                    </div>
--->
-<!--
-                    <div class="form-group">
-                        <label for="exampleSearch">New Value:</label>
-                        <input type="text" class="form-control" id="updateInput" name="updateInput">
-                    </div>
--->
 						<div class="form-group">
 							<label for="exampleDevice">Device:</label>
 							<select class="form-control" name="device">
@@ -323,15 +280,12 @@
 						
 						// SERIAL NUMBER
 						// Check if serial number already exists
-						$sql="Select `device_num` from `devices` where `serial_num`='$update_input'"; 
-						$rst=$dblink->query($sql) or
-							 die("<p>Something went wrong with $sql<br>".$dblink->error);
+						$result=api_call("check_serialNum_exists", "serialNum=".$update_input);
+						$num_rows=get_payload($result);
 						//sn not previously found or just assigning same serial number as before update
-						if ($rst->num_rows<=0 || $serial_num == $update_input)
+						if ($num_rows<=0 || $equipment['serial_num'] == $update_input)
 						{
-							$sql="UPDATE `devices` SET `serial_num`='$update_input', `device_type_num`='$device_type_num', `manufacturer_num`='$manufacturer_num', `status`='$status' WHERE `device_num`='$device_num'";
-							$dblink->query($sql) or
-								 die("<p>Something went wrong with $sql<br>".$dblink->error);
+							api_call("modify_equipment", "serial_num=".$update_input."&device_type_num=".$device_type_num."&manufacturer_num=".$manufacturer_num."&status=".$status."&device_num=".$device_num);
 						}
 						else
 							redirect("update.php?msg=SerialNumberExists"); // duplicate serial number
@@ -365,14 +319,16 @@
 							redirect("update.php?msg=InvalidInput_Device");
 						}
 						
-						// get device type number
-//						while($row = $result_dtype->fetch_assoc()) {
-//							$device_type_num = $row['device_type_num'];						
-//							
-//						}
-						$sql="UPDATE `device_types` SET `device_type_name`='$device_input', `status`='$status' WHERE `device_type_num`='$device_type_num'";
-							$dblink->query($sql) or
-								die("<p>Something went wrong with $sql<br>".$dblink->error);
+						//check if the device name already exists 
+						//also allow update if name is same as before
+						$result=api_call("check_device_exists", "device_input=".$device_input);
+						$num_rows=get_payload($result);
+						if ($num_rows<=0 || $equipment['device_type_name'] == $device_input){
+							api_call("modify_device", "device_input=".$device_input."&status=".$status."&device_type_num=".$equipment['device_type_num']);
+						}
+						else
+							redirect("update.php?msg=DeviceNameExists");
+
 						
 						redirect("update.php?msg=DeviceNameUpdated");
 					}
@@ -393,8 +349,6 @@
 							redirect("update.php?msg=TooLong_Manufacturer");
 						}
 						
-
-
 						//add slahes to avoid sql injection
 						$manufacturer_input = addslashes($manufacturer_input);
 
@@ -405,19 +359,18 @@
 							redirect("add.php?msg=InvalidInput_Manufacturer");
 						}
 						
-						// get manufacturer number
-//						while($row = $rst->fetch_assoc()) {
-//								$manufacturer_num = $row['manufacturer_num'];
-//						}
+						//check if the manufacturer name already exists 
+						//also allow update if name is same as before
+						$result=api_call("check_manufacturer_exists", "manufacturer_input=".$manufacturer_input);
+						$num_rows=get_payload($result);
+						if ($num_rows<=0 || $equipment['manufacturer_name'] == $manufacturer_input){
+							api_call("modify_manufacturer", "manufacturer_input=".$manufacturer_input."&status=".$status."&manufacturer_num=".$equipment['manufacturer_num']);
+						}
+						else
+							redirect("update.php?msg=ManufacturerNameExists");
 						
-						$sql="UPDATE `manufacturers` SET `manufacturer_name`='$manufacturer_input', `status`='$status' WHERE `manufacturer_num`='$manufacturer_num'";
-						$dblink->query($sql) or
-							 die("<p>Something went wrong with $sql<br>".$dblink->error);
 						redirect("update.php?msg=ManufacturerNameUpdated");
-						
-						
 					}
-
 						
 				 ?>
 
