@@ -12,6 +12,35 @@ $url=$_SERVER['REQUEST_URI'];
 $path = parse_url($url, PHP_URL_PATH);
 $pathComponents = explode("/", trim($path, "/"));
 $endPoint=$pathComponents[1];
+//echo $url."aaaaaaaa";
+//echo $path."aaaaa";
+//echo $pathComponents."aaaaaa";
+//echo $endPoint."aaaaaaaa";
+//echo $_SERVER['HTTP_HOST'];
+
+// if making api call from outside server, then make same call (with same data) through the api server URL
+if($_SERVER['HTTP_HOST'] != "ec2-3-142-218-191.us-east-2.compute.amazonaws.com:63221"){
+	$data = explode("?", $url);
+//	echo $data[1];
+
+	$ch=curl_init("https://ec2-3-142-218-191.us-east-2.compute.amazonaws.com:63221/api/".$endPoint);
+	//	$data="test";
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//ignore ssl
+	curl_setopt($ch, CURLOPT_POST,1);//tell curl we are using post
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $data[1]);//this is the data
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);//prepare a response
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		'content-type: application/x-www-form-urlencoded',
+		'content-length: '.strlen($data[1]))
+				);
+	$result=curl_exec($ch); // $result is the data RECEIVED from executing that api endpoint
+	curl_close($ch);
+	echo $result;
+	die();
+}
+
+else{
+
 switch($endPoint)
 {
     case "add_equipment":
@@ -106,6 +135,7 @@ switch($endPoint)
         $responseData=json_encode($output);
         echo $responseData;
         break;
+}
 }
 die();
 ?>
