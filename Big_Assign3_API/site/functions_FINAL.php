@@ -124,4 +124,61 @@ function log_api_error($dblink_error, $api_endpoint, $error_type_num){
 		die("Something went wrong with DEVICE_TYPES INSERT query $sql\n".$dblink_error->error);
 }
 
+function error_get_last_auto($dblink, $dblink_error, $sql, $api_endpoint){
+	$error_type_num=5;
+	log_api_error($dblink_error, $api_endpoint, $error_type_num);
+
+	header('Content-Type: application/json');
+	header('HTTP/1.1 200 OK');
+	$output[]='Status: ERROR';
+	$output[]="MSG: There are no records in the equipments table, cannot retrieve the index";
+	$output[]='Action: add_equipment';
+	$responseData=json_encode($output);
+	echo $responseData;
+	die("<p>Something went wrong with $sql<br>".$dblink->error);
+}
+
+function error_list_device($dblink, $dblink_error, $sql, $api_endpoint){
+	$error_type_num=6;
+	log_api_error($dblink_error, $api_endpoint, $error_type_num);
+
+	header('Content-Type: application/json');
+	header('HTTP/1.1 200 OK');
+	$output[]='Status: ERROR';
+	$output[]="MSG: There are no records in the device types table";
+	$output[]='Action: add_device';
+	$responseData=json_encode($output);
+	echo $responseData;
+	die("<p>Something went wrong with $sql<br>".$dblink_error->error);
+}
+
+
+function error_list_manufacturer($dblink, $dblink_error, $sql, $api_endpoint){
+	$error_type_num=6;
+	log_api_error($dblink_error, $api_endpoint, $error_type_num);
+
+	header('Content-Type: application/json');
+	header('HTTP/1.1 200 OK');
+	$output[]='Status: ERROR';
+	$output[]="MSG: There are no records in the manufacturers table";
+	$output[]='Action: add_manufacturer';
+	$responseData=json_encode($output);
+	echo $responseData;
+	die("<p>Something went wrong with $sql<br>".$dblink->error);
+}
+
+function error_list_equipments($dblink, $dblink_error, $sql, $api_endpoint){
+	$error_type_num=6;
+	log_api_error($dblink_error, $api_endpoint, $error_type_num);
+
+	header('Content-Type: application/json');
+	header('HTTP/1.1 200 OK');
+	$output[]='Status: ERROR';
+	$output[]="MSG: Something went wrong when querying specified equipment ids. Possible extra commas.";
+	$output[]='Action: list_equipments';
+	$responseData=json_encode($output);
+	echo $responseData;
+	die("<p>Something went wrong with $sql<br>".$dblink->error);
+}
+
 ?>

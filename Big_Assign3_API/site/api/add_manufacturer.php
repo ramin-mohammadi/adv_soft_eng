@@ -70,7 +70,7 @@
 		header('HTTP/1.1 200 OK');
 		$output[]='Status: ERROR';
 		$output[]="MSG: Manufacturer name already exists";
-		$output[]='Action: add_device';
+		$output[]='Action: add_manufacturer';
 		$responseData=json_encode($output);
 		echo $responseData;
 		die();

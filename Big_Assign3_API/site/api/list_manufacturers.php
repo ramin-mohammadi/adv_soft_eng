@@ -1,13 +1,17 @@
 <?php
 	include("../functions_FINAL.php");
 
+	$api_endpoint=10;
+	$error_type_num=0;
+	$dblink_error=db_connect("api_errors"); 
+
 	// connect to db called devices
 	$dblink=db_connect("devices"); 
 
 	//query the auto id and name from manufacturers table
 	$sql="Select `manufacturer_name`,`manufacturer_num` from `manufacturers` where `status`='active'";
 	$result=$dblink->query($sql) or
-		die("<p>Something went wrong with $sql<br>".$dblink->error); // LOG SELECT ERROR
+		error_list_manufacturer($dblink, $dblink_error, $sql, $api_endpoint);
 	$manufacturers=array();
 	while ($data=$result->fetch_array(MYSQLI_ASSOC))
 		$manufacturers[$data['manufacturer_num']]=$data['manufacturer_name'];
