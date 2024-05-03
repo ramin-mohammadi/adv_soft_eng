@@ -118,4 +118,10 @@ function get_action($result){
 	return json_decode($payloadData[1], true); // get right side of colon in "Action: <text>" 	
 }
 
+function log_api_error($dblink_error, $api_endpoint, $error_type_num){
+	$sql="Insert into `errors` (`api_endpoint_num`, `error_type_num`) values ('$api_endpoint', '$error_type_num')";
+	$dblink_error->query($sql) or
+		die("Something went wrong with DEVICE_TYPES INSERT query $sql\n".$dblink_error->error);
+}
+
 ?>

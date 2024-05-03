@@ -1,5 +1,6 @@
 <?php
-include("../functions.php");
+//include("../functions_FINAL.php");
+
 /*$url=$_SERVER['REQUEST_URI'];
 header('Content-Type: application/json');
 header('HTTP/1.1 200 OK');

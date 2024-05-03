@@ -259,7 +259,6 @@
 		$num_rows=get_payload($result);
 
 		if ($num_rows <= 0) {	// device_type doesnt exist, add new device_type
-//			new_device_type($dblink, $device_input);
 			api_call("add_device", "device_input=".$device_input);
 			redirect("index.php?msg=DeviceAdded");
 		}	
