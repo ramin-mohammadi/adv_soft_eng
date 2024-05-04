@@ -1,0 +1,7 @@
+External Server
+https://ec2-3-149-213-79.us-east-2.compute.amazonaws.com/api/apiName
+https://ec2-3-149-213-79.us-east-2.compute.amazonaws.com/web
+
+API Server
+https://ec2-3-142-218-191.us-east-2.compute.amazonaws.com:63221/api/apiName
+https://ec2-3-142-218-191.us-east-2.compute.amazonaws.com:63221/web
