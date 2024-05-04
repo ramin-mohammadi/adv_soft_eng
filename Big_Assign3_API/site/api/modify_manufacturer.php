@@ -146,9 +146,13 @@
 		}
 	}	
 
-	//see if device type num exists and is an active device
-	$result=api_call("list_manufacturers", "");
-	$manufacturers=get_payload($result);
+	//see if device type num exists 
+	$sql="Select `manufacturer_name`,`manufacturer_num` from `manufacturers`";
+	$result=$dblink->query($sql) or
+		error_list_manufacturer($dblink, $dblink_error, $sql, $api_endpoint);
+	$manufacturers=array();
+	while ($data=$result->fetch_array(MYSQLI_ASSOC))
+		$manufacturers[$data['manufacturer_num']]=$data['manufacturer_name'];
 
 	$manufacturerNumExists=false;
 

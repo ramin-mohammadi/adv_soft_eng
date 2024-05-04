@@ -76,9 +76,10 @@
 							
 							// TRUNACATE ARRAY bc our Php session and CPU cant handle all of the queries
 							$first_num=1000;
-
 							$list= implode(', ', $ids); 
+//							echo $list;
 							$result=api_call("list_equipments", "list_deviceNum=".$list."&first_num=".$first_num);
+//							echo $result;
 							$equipments=json_decode(get_payload($result), true);
 							$uri = "https://ec2-3-142-218-191.us-east-2.compute.amazonaws.com:63221/web/update.php";
 

@@ -56,7 +56,7 @@
 		die();
 	}
 
-	$pattern = "/^\d+(,\d+)*$/";  //a list of digits separated by a single comma or one digit
+	$pattern = "/^\d+(\s*,\s*\d+)*$/";  //a list of digits separated by a single comma or one digit
 	if(! $dirty_data=preg_match($pattern, $list) ){ // matches elements in array that meet regex pattern
 		$error_type_num=3;
 		log_api_error($dblink_error, $api_endpoint, $error_type_num);

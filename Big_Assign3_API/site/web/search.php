@@ -164,7 +164,7 @@
 				$result=api_call("search_serialNum", "search_input=".$search_input."&first_num=".$first_num."&inactive_option=".$inactive_option);
 				$ids=get_payload($result);
 
-				if (!isset($ids))//serial number doesnt exist
+				if (!isset($ids) || count($ids) == 0)//serial number doesnt exist
 				{
 					echo "ERROR: Serial Number doesnt exist";
 					redirect("search.php?msg=NoMatch_Search_SerialNum");
@@ -174,7 +174,7 @@
 				$result=api_call("search_device", "search_input=".$search_input."&first_num=".$first_num."&inactive_option=".$inactive_option);
 				$ids=get_payload($result);
 
-				if (!isset($ids))//device doesnt exist
+				if (!isset($ids) || count($ids) == 0)//device doesnt exist
 				{
 					echo "ERROR: Device doesnt exist";
 					redirect("search.php?msg=NoMatch_Search_Device");
@@ -184,7 +184,7 @@
 				$result=api_call("search_manufacturer", "search_input=".$search_input."&first_num=".$first_num."&inactive_option=".$inactive_option);
 				$ids=get_payload($result);
 
-				if (!isset($ids))//manufacturer doesnt exist
+				if (!isset($ids) || count($ids) == 0)//manufacturer doesnt exist
 				{
 					echo "ERROR: Manufacturer doesnt exist";
 					redirect("search.php?msg=NoMatch_Search_Manufacturer");

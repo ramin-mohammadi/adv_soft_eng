@@ -324,7 +324,9 @@
 						$result=api_call("check_device_exists", "device_input=".$device_input);
 						$num_rows=get_payload($result);
 						if ($num_rows<=0 || $equipment['device_type_name'] == $device_input){
-							api_call("modify_device", "device_input=".$device_input."&status=".$status."&device_type_num=".$equipment['device_type_num']);
+							$result=api_call("modify_device", "device_input=".$device_input."&status=".$status."&device_type_num=".$equipment['device_type_num']);
+//							echo $result;
+//							die();
 						}
 						else
 							redirect("update.php?msg=DeviceNameExists");
@@ -365,6 +367,7 @@
 						$num_rows=get_payload($result);
 						if ($num_rows<=0 || $equipment['manufacturer_name'] == $manufacturer_input){
 							api_call("modify_manufacturer", "manufacturer_input=".$manufacturer_input."&status=".$status."&manufacturer_num=".$equipment['manufacturer_num']);
+							
 						}
 						else
 							redirect("update.php?msg=ManufacturerNameExists");

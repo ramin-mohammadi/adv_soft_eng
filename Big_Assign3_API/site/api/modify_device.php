@@ -148,9 +148,16 @@
 		}
 	}	
 
-	//see if device type num exists and is an active device
-	$result=api_call("list_devices", "");
-	$devices=get_payload($result);
+	//see if device type num exists 
+//	$result=api_call("list_devices", "");
+//	$devices=get_payload($result);
+	$sql="Select `device_type_name`,`device_type_num` from `device_types`";
+	$result=$dblink->query($sql) or
+		die();
+	$devices=array();
+	while ($data=$result->fetch_array(MYSQLI_ASSOC))
+		$devices[$data['device_type_num']]=$data['device_type_name'];
+
 
 	$deviceTypeNumExists=false;
 
